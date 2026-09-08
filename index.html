@@ -13,6 +13,9 @@
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <title>Y2K Task Galaxy</title>
   <style>
+    @font-face{font-family:"VT323";src:url("./fonts/vt323.ttf") format("truetype");font-weight:400;font-style:normal;font-display:swap}
+    @font-face{font-family:"Pixelify Sans";src:url("./fonts/pixelify-sans-regular.ttf") format("truetype");font-weight:400;font-style:normal;font-display:swap}
+    @font-face{font-family:"Pixelify Sans";src:url("./fonts/pixelify-sans-bold.ttf") format("truetype");font-weight:700;font-style:normal;font-display:swap}
     :root{
       --navy:#27346e;--blue:#536ee8;--violet:#8274dc;--pink:#ef8fbd;--hot-pink:#d94e97;
       --lavender:#dfd7f4;--paper:#fbf8ff;--line:#7070ae;--shadow:#5a5a96;
@@ -186,7 +189,7 @@
         <div>
          <h2 id="calendar-view-heading" data-template-id="calendar-heading" class="canva-text" style="color: rgb(39, 52, 110); font-weight: 700; font-style: normal; font-size: 24px;">Calendar orbit</h2>
          <p data-template-id="calendar-intro" class="canva-text" style="color: rgb(87, 94, 147); font-weight: 400; font-style: normal; font-size: 17px;">A month of little wins, mapped among the stars.</p>
-        </div><span data-template-id="calendar-tip" class="status-pill canva-tag" style="background: rgb(255, 240, 168); color: rgb(102, 82, 112); font-weight: 700; font-style: normal; font-size: 10px;">TODAY HAS A PINK RING</span>
+        </div><span id="today-label" data-template-id="calendar-tip" class="status-pill canva-tag" style="background: rgb(255, 240, 168); color: rgb(102, 82, 112); font-weight: 700; font-style: normal; font-size: 10px;">TODAY</span>
        </div>
        <section data-template-id="calendar-panel" class="panel canva-panel" style="background: rgb(251, 250, 255);">
         <div class="calendar-tools"><button id="previous-month" type="button" data-template-id="previous-month-button" class="mini-btn canva-button" style="background: linear-gradient(rgb(255, 255, 255), rgb(215, 215, 237)); color: rgb(49, 56, 109); font-weight: 700; font-style: normal; font-size: 10px;">← Previous</button>
@@ -336,7 +339,7 @@
         taskRecords().filter(t=>t.due_date===key).forEach(t=>{const b=document.createElement("button");b.className="cal-task"+(t.completed?" done":"");b.style.borderColor=t.category_color;b.textContent=t.title;b.title=t.title;b.onclick=()=>showTaskDetails(t);day.appendChild(b);});grid.appendChild(day);
       }
     }
-    function render(){renderCategories();renderTasks();renderProgress();renderBadges();renderCalendar();}
+    function render(){$("today-label").textContent=`TODAY · ${dateLabel(TODAY).toUpperCase()} ${TODAY.slice(0,4)}`;renderCategories();renderTasks();renderProgress();renderBadges();renderCalendar();}
     function switchView(view){document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===view+"-view"));document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.view===view));}
     async function setComplete(task,completed,control){control.disabled=true;const result=await window.dataSdk.update({...task,completed,updated_at:new Date().toISOString()});control.disabled=false;if(result.isOk)await checkBadges();else $("task-message").textContent="Could not save that change. Please try again.";}
     function startEdit(t){editId=t.__backendId;$("task-title").value=t.title;$("task-notes").value=t.notes;$("task-date").value=t.due_date;$("task-category").value=t.category;$("task-priority").value=t.priority;$("task-completed").checked=t.completed;$("task-submit").textContent="Save changes";$("task-title").focus();}
