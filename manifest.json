@@ -1,0 +1,21 @@
+{
+  "name": "Y2K Task Galaxy",
+  "short_name": "Task Galaxy",
+  "description": "A playful offline-first planner for missions, categories, and calendar orbit.",
+  "id": "./index.html",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "prefer_related_applications": false,
+  "background_color": "#d4b6d6",
+  "theme_color": "#536ee8",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

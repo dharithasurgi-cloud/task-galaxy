@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#536ee8">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Task Galaxy">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <title>Y2K Task Galaxy</title>
+  <style>
+    :root{
+      --navy:#27346e;--blue:#536ee8;--violet:#8274dc;--pink:#ef8fbd;--hot-pink:#d94e97;
+      --lavender:#dfd7f4;--paper:#fbf8ff;--line:#7070ae;--shadow:#5a5a96;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;min-width:320px;color:var(--navy);font-family:"VT323",monospace;background:#d7caed}
+    button,input,select,textarea{font:inherit} button{cursor:pointer} button:disabled{cursor:not-allowed;opacity:.6}
+    :focus-visible{outline:3px solid #ffed5e;outline-offset:3px}
+    .sky{
+      width:100%;min-height:calc(100 * min(var(--vh, 1vh), 1vh));padding:17px;overflow:hidden;
+      background-color:#d4b6d6;
+      background-image:linear-gradient(#b28ab84d 1px,transparent 1px),linear-gradient(90deg,#b28ab84d 1px,transparent 1px),radial-gradient(circle at 10% 13%,#fff 0 2px,transparent 3px),radial-gradient(circle at 89% 23%,#fff 0 2px,transparent 3px);
+      background-size:20px 20px,20px 20px,150px 150px,190px 190px;
+    }
+    .desktop{
+      max-width:1440px;margin:0 auto;border:2px solid #4d4c88;background:#d8d5f1;
+      box-shadow:7px 8px 0 #716b9f,0 18px 32px #65507c80;overflow:hidden;
+    }
+    .titlebar{
+      min-height:31px;display:flex;align-items:center;justify-content:space-between;padding:4px 7px 4px 11px;
+      background:linear-gradient(90deg,#7587ed,#ca7dc0 57%,#f3add0);
+      border-bottom:2px solid #4d4c88;color:#fff;text-shadow:1px 1px #454070;
+      font-family:"Pixelify Sans",sans-serif;letter-spacing:.04em;
+    }
+    .window-controls{display:flex;gap:3px}
+    .window-controls span{
+      display:grid;place-items:center;width:18px;height:18px;background:linear-gradient(#fff,#c7c8e4);
+      border:1px solid #4e5289;box-shadow:inset 1px 1px #fff,inset -1px -1px #9695bc;
+    }
+    .window-controls span::after{font:700 12px "VT323",monospace;color:#384173}
+    .window-controls span:nth-child(1)::after{content:"_";transform:translateY(-3px)}
+    .window-controls span:nth-child(2)::after{content:"□"}
+    .window-controls span:nth-child(3)::after{content:"×"}
+    .header-customizer{display:flex;align-items:center;justify-content:flex-end}.header-customizer select{min-height:44px;border:1px solid #4e5289;background:#fff;color:#384173;padding:3px 6px;font-family:"Pixelify Sans",sans-serif;font-size:12px}
+    .titlebar{background:linear-gradient(90deg,var(--blue),var(--violet) 57%,var(--pink))!important}.nav button.active{background:linear-gradient(var(--blue),var(--violet))!important}.panel::before{background:linear-gradient(90deg,var(--blue),var(--pink))}.action{background:linear-gradient(var(--pink),var(--hot-pink))!important}
+    body[data-theme="dark"]{--navy:#f3efff;--paper:#272340;--lavender:#39345b;background:#17152b!important}body[data-theme="dark"] .sky{background-color:#211b3d;background-image:linear-gradient(#66528a44 1px,transparent 1px),linear-gradient(90deg,#66528a44 1px,transparent 1px),radial-gradient(circle at 10% 13%,#dcd1ff 0 2px,transparent 3px),radial-gradient(circle at 89% 23%,#dcd1ff 0 2px,transparent 3px)}body[data-theme="dark"] .desktop{background:#24203f;border-color:#665b91;box-shadow:7px 8px 0 #100e22,0 18px 32px #100e2280}body[data-theme="dark"] .sidebar{background:linear-gradient(90deg,#30294f,#24203f);border-color:#665b91}body[data-theme="dark"] .content{background:linear-gradient(135deg,#292342 0%,#262b52 53%,#4a294b 140%)}body[data-theme="dark"] .panel,body[data-theme="dark"] .theme-controls{background:#302b50!important;color:#f3efff;border-color:#7569a0}body[data-theme="dark"] .task,body[data-theme="dark"] .day{background:#302c54;color:#f3efff}body[data-theme="dark"] .day.muted{background:#252141;color:#aaa3c8}body[data-theme="dark"] .field input,body[data-theme="dark"] .field textarea,body[data-theme="dark"] .field select,body[data-theme="dark"] .filters input,body[data-theme="dark"] .filters select,body[data-theme="dark"] .category-edit input[type="text"],body[data-theme="dark"] .new-category input,body[data-theme="dark"] .theme-controls select{background:#211d3d;color:#f3efff;border-color:#8175ad;box-shadow:inset 2px 2px #151329}body[data-theme="dark"] .category-row,body[data-theme="dark"] .palette-option,body[data-theme="dark"] .stat,body[data-theme="dark"] .badge,body[data-theme="dark"] .task-dialog-detail{background:#39335e;color:#f3efff;border-color:#7569a0}body[data-theme="dark"] .calendar-selectors select{background:#211d3d;color:#f3efff;border-color:#8175ad}body[data-theme="dark"] .header-customizer select{background:#211d3d;color:#f3efff;border-color:#8175ad}
+    body[data-palette]{background:var(--palette-sky)!important;color:var(--palette-text)}body[data-palette] .sky{background-color:var(--palette-sky)!important;background-image:linear-gradient(var(--palette-grid) 1px,transparent 1px),linear-gradient(90deg,var(--palette-grid) 1px,transparent 1px),radial-gradient(circle at 10% 13%,var(--palette-spark) 0 2px,transparent 3px),radial-gradient(circle at 89% 23%,var(--palette-spark) 0 2px,transparent 3px)!important}body[data-palette] .desktop{background:var(--palette-desktop)!important;border-color:var(--palette-line)!important;box-shadow:7px 8px 0 var(--palette-shadow),0 18px 32px var(--palette-shadow-soft)!important}body[data-palette] .sidebar{background:linear-gradient(90deg,var(--palette-sidebar-a),var(--palette-sidebar-b))!important;border-color:var(--palette-line)!important}body[data-palette] .content{background:linear-gradient(135deg,var(--palette-content-a),var(--palette-content-b) 53%,var(--palette-content-c) 140%)!important}body[data-palette] .brand,body[data-palette] .theme-controls{background:var(--palette-panel)!important;border-color:var(--palette-line)!important;box-shadow:3px 3px 0 var(--palette-shadow),inset 2px 2px var(--palette-highlight)!important}body[data-palette] .panel{background:var(--palette-panel)!important;border-color:var(--palette-line)!important;box-shadow:4px 4px 0 var(--palette-shadow),inset 2px 2px var(--palette-highlight)!important}body[data-palette] .task,body[data-palette] .day{background:var(--palette-task)!important;color:var(--palette-text)!important;border-color:var(--palette-line)!important}body[data-palette] .day.muted{background:var(--palette-muted)!important;color:var(--palette-muted-text)!important}body[data-palette] .category-row,body[data-palette] .stat,body[data-palette] .badge,body[data-palette] .task-dialog-detail{background:var(--palette-soft)!important;color:var(--palette-text)!important;border-color:var(--palette-line)!important}body[data-palette] .field input,body[data-palette] .field textarea,body[data-palette] .field select,body[data-palette] .filters input,body[data-palette] .filters select,body[data-palette] .category-edit input[type="text"],body[data-palette] .new-category input,body[data-palette] .theme-controls select,body[data-palette] .calendar-selectors select{background:var(--palette-field)!important;color:var(--palette-text)!important;border-color:var(--palette-line)!important;box-shadow:inset 2px 2px var(--palette-field-shadow)!important}body[data-palette] .canva-text:not([data-template-id="window-title"]),body[data-palette] .field label,body[data-palette] .stat span,body[data-palette] .panel h3,body[data-palette] .topline p{color:var(--palette-text-muted)!important}body[data-palette] .canva-panel{background:var(--palette-panel)!important}body[data-palette] .canva-input{background:var(--palette-field)!important;color:var(--palette-text)!important}body[data-palette] .canva-tag{background:var(--palette-highlight-soft)!important;color:var(--palette-text)!important}body[data-palette] .canva-button{background:linear-gradient(var(--palette-button-a),var(--palette-button-b))!important;color:#fff!important;border-color:var(--palette-button-border)!important}body[data-palette] .nav button.active{background:linear-gradient(var(--palette-blue),var(--palette-violet))!important}body[data-palette] .action{background:linear-gradient(var(--palette-pink),var(--palette-hot))!important}body[data-palette] .titlebar{background:linear-gradient(90deg,var(--palette-blue),var(--palette-violet) 57%,var(--palette-pink))!important}body[data-palette] .panel::before{background:linear-gradient(90deg,var(--palette-blue),var(--palette-pink))!important}body[data-palette] .cal-task{background:var(--palette-soft)!important;color:var(--palette-text)!important;border-color:var(--palette-line)}body[data-palette] .bar{background:var(--palette-bar-bg);border-color:var(--palette-line)}body[data-palette] .bar i{background:var(--palette-bar-fill)}
+    body[data-theme="dark"][data-palette] .desktop{background:#24203f!important}body[data-theme="dark"][data-palette] .sidebar{background:linear-gradient(90deg,#30294f,#24203f)!important}body[data-theme="dark"][data-palette] .content{background:linear-gradient(135deg,#292342 0%,#262b52 53%,#4a294b 140%)!important}body[data-theme="dark"][data-palette] .brand,body[data-theme="dark"][data-palette] .theme-controls,body[data-theme="dark"][data-palette] .panel{background:#302b50!important}body[data-theme="dark"][data-palette] .task,body[data-theme="dark"][data-palette] .day{background:#302c54!important}body[data-theme="dark"][data-palette] .day.muted{background:#252141!important}body[data-theme="dark"][data-palette] .category-row,body[data-theme="dark"][data-palette] .stat,body[data-theme="dark"][data-palette] .badge,body[data-theme="dark"][data-palette] .task-dialog-detail{background:#39335e!important}body[data-theme="dark"][data-palette] .field input,body[data-theme="dark"][data-palette] .field textarea,body[data-theme="dark"][data-palette] .field select,body[data-theme="dark"][data-palette] .filters input,body[data-theme="dark"][data-palette] .filters select,body[data-theme="dark"][data-palette] .category-edit input[type="text"],body[data-theme="dark"][data-palette] .new-category input,body[data-theme="dark"][data-palette] .theme-controls select,body[data-theme="dark"][data-palette] .calendar-selectors select{background:#211d3d!important;color:#f3efff!important;border-color:#8175ad!important}
+    body[data-palette] .status-pill{border-color:var(--palette-line)!important;box-shadow:2px 2px 0 var(--palette-shadow)!important}body[data-palette] .tag{background:var(--palette-soft)!important;color:var(--palette-text)!important;border-color:var(--palette-line)!important}body[data-palette] .weekday{background:linear-gradient(var(--palette-soft),var(--palette-field-shadow))!important;border-color:var(--palette-line)!important;color:var(--palette-text-muted)!important}body[data-palette] .date-num{background:var(--palette-soft)!important;border-color:var(--palette-line)!important;color:var(--palette-text)!important}body[data-palette] .day.today .date-num{background:var(--palette-hot)!important;color:#fff!important}
+    body[data-palette] .mini-btn,body[data-palette] .calendar-tools .canva-button,body[data-palette] .calendar-tools .mini-btn,body[data-palette] .nav button:not(.active){color:var(--palette-text)!important;background:linear-gradient(var(--palette-button-a),var(--palette-button-b))!important}body[data-theme="dark"][data-palette] .mini-btn,body[data-theme="dark"][data-palette] .calendar-tools .canva-button,body[data-theme="dark"][data-palette] .calendar-tools .mini-btn,body[data-theme="dark"][data-palette] .nav button:not(.active){color:#f3efff!important;background:linear-gradient(#39335e,#2d294d)!important}body[data-palette] .action,body[data-palette] .nav button.active{color:#fff!important}
+    body[data-theme="dark"][data-palette] .brand h1,body[data-theme="dark"][data-palette] .brand p,body[data-theme="dark"][data-palette] .canva-text:not([data-template-id="window-title"]),body[data-theme="dark"][data-palette] .topline p,body[data-theme="dark"][data-palette] .panel h3{color:#f3efff!important}
+    body[data-theme="dark"][data-palette] .stat,body[data-theme="dark"][data-palette] .stat span,body[data-theme="dark"][data-palette] .stat strong,body[data-theme="dark"][data-palette] .badge,body[data-theme="dark"][data-palette] .badge b,body[data-theme="dark"][data-palette] .badge small{color:#f3efff!important}
+    .shell{display:grid;grid-template-columns:245px minmax(0,1fr);min-width:0;min-height:760px}
+    .sidebar{padding:13px;background:linear-gradient(90deg,#ece9fb,#d4d0ef);border-right:2px solid #7771aa}
+    .brand{position:relative;margin:2px 2px 15px;padding:13px 10px 12px;background:#fcfbff;border:2px solid #7372a8;box-shadow:3px 3px 0 #aaa3cc,inset 2px 2px #fff}
+    .brand h1{margin:0;font-family:"Pixelify Sans",sans-serif;font-size:22px;line-height:1.1;letter-spacing:.04em}
+    .brand p{margin:7px 0 0;font-size:17px;color:#55568d}.sticker{position:absolute;right:7px;top:-16px;color:#ffeff8;font-size:31px;text-shadow:2px 2px #bd74a5}
+    .nav{display:grid;gap:7px;margin-bottom:15px}
+    .nav button,.action,.mini-btn{
+      border:2px solid #65669d;border-radius:0;background:linear-gradient(#fff,#d7d7ed);color:#31386d;
+      box-shadow:inset 1px 1px #fff,inset -2px -2px #aaa8c8,2px 2px 0 #8986b2;padding:8px 10px;min-height:44px;
+      font-family:"Pixelify Sans",sans-serif;font-size:12px;text-align:left;transition:transform .12s;
+    }
+    .nav button:hover,.action:hover,.mini-btn:hover{transform:translate(-1px,-1px)}
+    .nav button:active,.action:active,.mini-btn:active{transform:translate(2px,2px);box-shadow:inset 2px 2px #9a98bb}
+    .nav button.active{background:linear-gradient(#8294f4,#5b65bf);color:#fff;border-color:#41477f;text-shadow:1px 1px #3c4179}
+    .side-title{margin:13px 4px 7px;font-family:"Pixelify Sans",sans-serif;font-size:11px;letter-spacing:.08em;color:#5b5a8d}
+    .category-stack{display:grid;gap:5px}.category-row{display:flex;align-items:center;gap:7px;padding:5px 7px;border:1px solid #b2add1;background:#f5f1ff;font-size:16px}
+    .theme-controls{margin:15px 2px 0;padding:10px;border:2px solid #7372a8;background:#fcfbff;box-shadow:3px 3px 0 #aaa3cc,inset 2px 2px #fff}.theme-controls h2{margin:0 0 8px;font-family:"Pixelify Sans",sans-serif;font-size:11px}.theme-controls label{display:block;margin-bottom:3px;font-family:"Pixelify Sans",sans-serif;font-size:11px}.theme-controls select{width:100%;min-height:40px;border:2px solid #8a89b7;background:#fff;color:#31386d;padding:5px 7px;font-size:16px}.palette-list{display:grid;gap:6px;margin-top:8px}.palette-option{display:flex;align-items:center;gap:7px;width:100%;min-height:40px;padding:5px 7px;border:2px solid #b2add1;background:#f5f1ff;color:#31386d;text-align:left}.palette-option.selected{border-color:var(--hot-pink);box-shadow:inset 0 0 0 2px #fff,2px 2px 0 #b69ab1}.palette-swatches{display:flex;gap:3px}.palette-swatches i{display:block;width:18px;height:18px;border:1px solid #454878}
+    .dot{width:10px;height:10px;border:1px solid #454878;box-shadow:1px 1px #fff;flex:none}
+    .content{min-width:0;padding:18px;background:linear-gradient(135deg,#f6effb 0%,#e2e9fd 53%,#f7cce1 140%)}
+    .topline{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:15px}
+    .topline h2{margin:0;font-family:"Pixelify Sans",sans-serif;font-size:21px}.topline p{margin:6px 0 0;font-size:17px;color:#575e93}
+    .status-pill{display:inline-block;padding:5px 8px;border:1px solid #9a7095;background:#fff0a8;color:#665270;box-shadow:2px 2px 0 #b69ab1;font-size:11px!important;white-space:nowrap}
+    .dashboard-grid{display:grid;grid-template-columns:minmax(0,1fr) 254px;gap:15px}
+    .panel{position:relative;padding:14px;border:2px solid #65659d;background:#fbfaff;box-shadow:4px 4px 0 #aaa3c5,inset 2px 2px #fff}
+    .panel::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#7b8deb,#f3a2c7)}
+    .panel h3{margin:4px 0 0;font-family:"Pixelify Sans",sans-serif;font-size:11px;letter-spacing:.05em}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:13px}.wide{grid-column:1/-1}
+    .field label{display:block;margin-bottom:3px;font-family:"Pixelify Sans",sans-serif;font-size:11px!important;color:#515689}
+    .field input,.field textarea,.field select,.filters input,.filters select,.category-edit input[type="text"],.new-category input{
+      width:100%;border:2px solid #8a89b7;border-radius:0;padding:7px 8px;background:#fff;color:#31386d;
+      box-shadow:inset 2px 2px #cbc9df;font-size:17px;
+    }
+    .field textarea{height:58px;resize:vertical}.checkline{display:flex;align-items:center;gap:7px;font-size:16px}.checkline input,.toggle{accent-color:var(--hot-pink)}
+    .form-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:11px}.action{background:linear-gradient(#ffb4d7,#dd639f);color:#fff;border-color:#9b4d89;text-shadow:1px 1px #984576}
+    .inline-message{min-height:18px;color:#af397c;font-size:16px}
+    .stats{display:grid;gap:9px;margin-top:11px}.stat{padding:10px;border:1px solid #9491bd;background:linear-gradient(135deg,#d9f5ff,#fdfaff);box-shadow:inset 1px 1px #fff}.stat:nth-child(2){background:linear-gradient(135deg,#ffe2f0,#fdfaff)}
+    .stat span{font-family:"Pixelify Sans",sans-serif;font-size:11px!important;color:#555c8e}.stat strong{display:block;font-family:"Pixelify Sans",sans-serif;font-size:21px;margin-top:4px}.bar{height:10px;margin-top:7px;padding:1px;border:1px solid #5e6193;background:#bbb8d6}.bar i{display:block;height:100%;background:repeating-linear-gradient(90deg,#69bff0 0 7px,#6e7ce0 7px 11px);transition:width .35s}
+    .filters{display:flex;flex-wrap:wrap;gap:7px;margin:17px 0 11px}.filters input{flex:1;min-width:150px}.filters select{width:auto;min-width:128px}
+    .task-list{display:grid;gap:9px}.task{display:grid;grid-template-columns:auto 1fr auto;align-items:start;gap:10px;padding:10px;border:2px solid #7774a9;background:#fff;box-shadow:3px 3px 0 #b2aecb}.task.completed{opacity:.68}.task.completed .task-name{text-decoration:line-through}.toggle{width:18px;height:18px;margin-top:2px}.task-name{font-family:"Pixelify Sans",sans-serif;font-size:12px}.task-note{margin-top:3px;font-size:16px;color:#595f92}.meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}.tag{padding:2px 5px;border:1px solid #9290ba;background:#eeeeff;font-size:13px;color:#414a80}.overdue{background:#ffd9e7;color:#a43c70}.priority-high{background:#ffeda9;color:#77511d}.task-actions{display:flex;gap:5px}.mini-btn{padding:5px 7px;font-size:12px}.mini-btn.danger{color:#a52f69;border-color:#bd7197}.empty{padding:24px 12px;border:2px dashed #8986b2;background:#f9f6ff;text-align:center;font-size:17px}
+    .badges{display:grid;gap:7px;margin-top:11px}.badge{display:flex;gap:8px;align-items:center;padding:8px;border:1px solid #aaa6c9;background:#edeaff;color:#62618b}.badge.unlocked{background:linear-gradient(135deg,#fff3a8,#f9c6e2);color:#5c4376;border-color:#c78baf}.badge-icon{font-size:20px}.badge b{display:block;font-family:"Pixelify Sans",sans-serif;font-size:11px}.badge small{font-size:14px}
+    .category-manager{margin-top:18px}.category-edit-list{display:grid;gap:7px;margin-top:12px}.category-edit{display:grid;grid-template-columns:17px minmax(0,1fr) 39px auto auto;gap:7px;align-items:center}.category-edit input[type="color"],.new-category input[type="color"]{flex:0 0 44px;width:44px;height:44px;padding:1px;border:2px solid #8987b5;background:#fff}.new-category{display:flex;gap:7px;margin-top:10px}.new-category input{flex:1;min-width:0}
+    .view{display:none}.view.active{display:block}.calendar-tools{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:6px 0 13px}.calendar-tools .mini-btn{font-size:12px !important}.calendar-selectors{display:flex;gap:6px}.calendar-selectors select{width:auto;min-width:100px;min-height:44px;border:2px solid #8a89b7;border-radius:0;padding:5px 23px 5px 7px;background:linear-gradient(#fff,#e5e4f4);color:#31386d;box-shadow:inset 1px 1px #fff,2px 2px 0 #aaa8c8;font-family:"Pixelify Sans",sans-serif;font-size:12px}.calendar-selectors select:last-child{min-width:78px}.calendar{display:grid;grid-template-columns:repeat(7,minmax(82px,1fr));border-top:2px solid #7774a8;border-left:2px solid #7774a8;overflow:auto}.weekday{padding:7px 3px;border-right:1px solid #7774a8;border-bottom:1px solid #7774a8;background:linear-gradient(#eee8ff,#cfc9eb);text-align:center;font-family:"Pixelify Sans",sans-serif;font-size:11px}.day{min-height:105px;padding:5px;border-right:1px solid #8b87b1;border-bottom:1px solid #8b87b1;background:#fff}.day.muted{background:#eeecf6;color:#9995b3}.day.today{background:#fff0f7;box-shadow:inset 0 0 0 3px #e86da6}.date-num{display:inline-grid;place-items:center;width:24px;height:24px;border:1px solid #7774a8;background:#e4e4f5;font-family:"Pixelify Sans",sans-serif;font-size:11px}.day.today .date-num{background:#dd5f9d;color:#fff}.cal-task{display:block;width:100%;min-height:44px;margin-top:4px;padding:5px 4px;border:1px solid #a09cbd;border-left:4px solid;background:#f9f8ff;font-size:14px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cal-task.done{text-decoration:line-through;opacity:.62}
+    .celebrate{position:fixed;z-index:20;right:20px;bottom:20px;max-width:315px;padding:12px;border:2px solid #565587;background:linear-gradient(#fff2a5,#f69bc9);box-shadow:5px 5px 0 #77709c;color:#4c4271;font-family:"Pixelify Sans",sans-serif;font-size:12px;transform:translateY(150%);transition:transform .3s}.celebrate.show{transform:translateY(0)}.spark{margin-right:6px;font-size:20px}
+    .task-dialog{width:min(430px,calc(100% - 28px));padding:0;border:2px solid #565587;background:#fbfaff;color:var(--navy);box-shadow:7px 7px 0 #77709c}.task-dialog::backdrop{background:#28285599}.task-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;background:linear-gradient(90deg,#7587ed,#ca7dc0);color:#fff;font-family:"Pixelify Sans",sans-serif}.task-dialog-head h2{margin:0;font-size:14px}.task-dialog-close{padding:2px 8px;border:1px solid #4e5289;background:#fff;color:#384173;font-size:16px}.task-dialog-body{padding:15px}.task-dialog-title{margin:0 0 12px;font-family:"Pixelify Sans",sans-serif;font-size:18px;overflow-wrap:anywhere}.task-dialog-notes{min-height:24px;margin:0 0 13px;padding:9px;border:1px solid #b2add1;background:#f5f1ff;font-size:17px;white-space:pre-wrap;overflow-wrap:anywhere}.task-dialog-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.task-dialog-detail{padding:7px;border:1px solid #b2add1;background:#fff;font-size:16px}.task-dialog-detail b{display:block;margin-bottom:2px;font-family:"Pixelify Sans",sans-serif;font-size:11px;color:#555c8e}.task-dialog-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:14px}
+    @media(max-width:980px){.shell{grid-template-columns:1fr}.sidebar{border-right:0;border-bottom:2px solid #7771aa}.nav{grid-template-columns:repeat(2,minmax(0,1fr))}.category-stack{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}.dashboard-grid{grid-template-columns:1fr}}
+    @media(max-width:560px){.sky{padding:7px}.content{padding:12px}.topline{display:block}.status-pill{margin-top:9px}.form-grid{grid-template-columns:1fr}.calendar-tools{flex-wrap:wrap}.calendar-tools .calendar-selectors{order:3;width:100%;justify-content:center}.calendar-tools>div:last-child{margin-left:auto}.calendar{grid-template-columns:repeat(7,minmax(61px,1fr))}.day{min-height:86px}.task{grid-template-columns:auto 1fr}.task-actions{grid-column:2}.category-edit{grid-template-columns:17px minmax(0,1fr) 38px auto auto}}
+  </style>
+ </head>
+ <body data-template-id="__page-root" style="background: rgb(212, 182, 214);">
+  <div class="sky">
+   <div class="desktop">
+    <header class="titlebar canva-header" data-template-id="window-bar" style="background: linear-gradient(90deg, rgb(117, 135, 237), rgb(202, 125, 192)); color: rgb(255, 255, 255);"><span data-template-id="window-title" class="canva-text" style="color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 12px;">Y2K TASK GALAXY.EXE</span>
+    <div class="header-customizer"><select id="theme-mode" aria-label="Theme"><option value="light">Light mode</option><option value="dark">Dark mode</option><option value="ocean">Ocean Pop</option><option value="mint">Mint Soda</option><option value="sunset">Sunset Glow</option><option value="midnight">Midnight Blue</option></select></div>
+    </header>
+    <div class="shell">
+     <aside class="sidebar" aria-label="Planner navigation">
+      <div class="brand"><span class="sticker" aria-hidden="true">✦</span>
+       <h1 data-template-id="app-title" class="canva-text" style="color: rgb(39, 52, 110); font-weight: 700; font-style: normal; font-size: 22px;">TASK GALAXY</h1>
+       <p data-template-id="app-subtitle" class="canva-text" style="color: rgb(85, 86, 141); font-weight: 400; font-style: normal; font-size: 17px;">your tiny desktop universe</p>
+      </div>
+      <nav class="nav" aria-label="Views"><button type="button" class="canva-button" data-view="list" data-template-id="dashboard-tab" style="background: linear-gradient(rgb(130, 148, 244), rgb(91, 101, 191)); color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 12px;">✦ Mission control</button> <button type="button" class="active canva-button" data-view="calendar" data-template-id="calendar-tab" style="background: linear-gradient(rgb(130, 148, 244), rgb(91, 101, 191)); color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 12px;">▦ Calendar orbit</button>
+      </nav>
+      <div id="sidebar-categories" class="category-stack"></div>
+     </aside>
+     <main class="content">
+      <section id="list-view" class="view" aria-labelledby="workspace-title">
+       <div class="topline">
+        <div>
+         <h2 id="workspace-title" data-template-id="dashboard-heading" class="canva-text" style="color: rgb(39, 52, 110); font-weight: 700; font-style: normal; font-size: 24px;">Mission control</h2>
+         <p data-template-id="dashboard-intro" class="canva-text" style="color: rgb(87, 94, 147); font-weight: 400; font-style: normal; font-size: 17px;">Plot the day, clear the quests, collect the sparkle.</p>
+        </div><span data-template-id="example-note" class="status-pill canva-tag" style="background: rgb(255, 240, 168); color: rgb(102, 82, 112); font-weight: 700; font-style: normal; font-size: 10px;">EXAMPLE MISSIONS INCLUDED</span>
+       </div>
+       <div class="dashboard-grid">
+        <section data-template-id="add-task-panel" class="panel canva-panel" aria-labelledby="add-task-title" style="background: rgb(251, 250, 255);">
+         <h3 id="add-task-title" data-template-id="add-task-heading" class="canva-text" style="color: rgb(39, 52, 110); font-weight: 700; font-style: normal; font-size: 11px;">NEW MISSION</h3>
+         <form id="task-form">
+          <div class="form-grid">
+           <div class="field wide"><label for="task-title" data-template-id="task-title-label" class="canva-text" style="color: rgb(81, 86, 137); font-weight: 700; font-style: normal; font-size: 10px;">Task title</label> <input id="task-title" required="" maxlength="100">
+           </div>
+           <div class="field wide"><label for="task-notes" data-template-id="task-notes-label" class="canva-text" style="color: rgb(81, 86, 137); font-weight: 700; font-style: normal; font-size: 10px;">Optional notes</label> <textarea id="task-notes" maxlength="300"></textarea>
+           </div>
+           <div class="field"><label for="task-date" data-template-id="task-date-label" class="canva-text" style="color: rgb(81, 86, 137); font-weight: 700; font-style: normal; font-size: 10px;">Due date</label> <input id="task-date" type="date" required="">
+           </div>
+           <div class="field"><label for="task-category" data-template-id="task-category-label" class="canva-text" style="color: rgb(81, 86, 137); font-weight: 700; font-style: normal; font-size: 10px;">Category</label> <select id="task-category"></select>
+           </div>
+           <div class="field"><label for="task-priority" data-template-id="task-priority-label" class="canva-text" style="color: rgb(81, 86, 137); font-weight: 700; font-style: normal; font-size: 10px;">Priority</label> <select id="task-priority"><option value="Low">Low</option><option value="Medium" selected="">Medium</option><option value="High">High</option></select>
+           </div><label class="checkline" for="task-completed"><input id="task-completed" type="checkbox"><span data-template-id="task-completed-label" class="canva-text" style="color: rgb(81, 86, 137); font-weight: 400; font-style: normal; font-size: 16px;">Already complete</span></label>
+          </div>
+          <div class="form-foot"><span id="task-message" class="inline-message" aria-live="polite"></span> <button id="task-submit" type="submit" data-template-id="add-task-button" class="action canva-button" style="background: linear-gradient(rgb(255, 180, 215), rgb(221, 99, 159)); color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 12px;">Add to galaxy</button>
+          </div>
+         </form>
+        </section>
+        <aside>
+         <section data-template-id="progress-panel" class="panel canva-panel" style="background: rgb(251, 250, 255);">
+          <h3 data-template-id="progress-heading" class="canva-text" style="color: rgb(39, 52, 110); font-weight: 700; font-style: normal; font-size: 11px;">PROGRESS PULSE</h3>
+          <div class="stats">
+           <div class="stat">
+            <span data-template-id="today-progress-label" class="canva-text" style="color: rgb(85, 92, 142); font-weight: 700; font-style: normal; font-size: 9px;">TODAY'S QUESTS</span><strong id="today-progress" aria-live="polite">0 / 0</strong>
+            <div class="bar">
+             <i id="today-bar"></i>
+            </div>
+           </div>
+           <div class="stat">
+            <span data-template-id="month-progress-label" class="canva-text" style="color: rgb(85, 92, 142); font-weight: 700; font-style: normal; font-size: 9px;">THIS MONTH</span><strong id="month-progress" aria-live="polite">0 / 0</strong>
+            <div class="bar">
+             <i id="month-bar"></i>
+            </div>
+           </div>
+          </div>
+         </section>
+         <section data-template-id="badge-panel" class="panel canva-panel" style="margin-top: 18px; background: rgb(251, 250, 255);">
+          <h3 data-template-id="badge-heading" class="canva-text" style="color: rgb(39, 52, 110); font-weight: 700; font-style: normal; font-size: 11px;">ACHIEVEMENT CABINET</h3>
+          <div id="badge-list" class="badges"></div>
+         </section>
+        </aside>
+       </div>
+       <div class="filters" aria-label="Task filters"><input id="search" type="search" data-template-id="search-input" class="canva-input" placeholder="Search your missions…" style="background: rgb(255, 255, 255); color: rgb(49, 56, 109); font-weight: 400; font-style: normal; font-size: 17px;"> <select id="filter-category" aria-label="Filter by category"></select> <select id="filter-status" aria-label="Filter by completion"><option value="all">All status</option><option value="open">Open</option><option value="done">Completed</option></select> <select id="filter-priority" aria-label="Filter by priority"><option value="all">All priority</option><option value="High">High priority</option><option value="Medium">Medium priority</option><option value="Low">Low priority</option></select>
+       </div>
+       <div id="task-list" class="task-list" aria-live="polite"></div>
+       <section data-template-id="category-panel" class="panel canva-panel category-manager" aria-labelledby="category-heading" style="background: rgb(251, 250, 255);">
+        <h3 id="category-heading" data-template-id="category-heading" class="canva-text" style="color: rgb(39, 52, 110); font-weight: 700; font-style: normal; font-size: 11px;">CATEGORY CUSTOMISER</h3>
+        <div id="category-edit-list" class="category-edit-list"></div>
+        <form id="category-form" class="new-category"><label class="sr-only" for="new-category-name">New category name</label> <input id="new-category-name" maxlength="30" data-template-id="new-category-input" class="canva-input" placeholder="Add a category" style="background: rgb(255, 255, 255); color: rgb(49, 56, 109); font-weight: 400; font-style: normal; font-size: 17px;"> <input id="new-category-color" type="color" value="#536ee8" aria-label="New category colour"> <button id="new-category-button" type="submit" data-template-id="new-category-button" class="action canva-button" style="background: linear-gradient(rgb(255, 180, 215), rgb(221, 99, 159)); color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 12px;">Add</button>
+        </form><span id="category-message" class="inline-message" aria-live="polite"></span>
+       </section>
+      </section>
+      <section id="calendar-view" class="view active" aria-labelledby="calendar-view-heading">
+       <div class="topline">
+        <div>
+         <h2 id="calendar-view-heading" data-template-id="calendar-heading" class="canva-text" style="color: rgb(39, 52, 110); font-weight: 700; font-style: normal; font-size: 24px;">Calendar orbit</h2>
+         <p data-template-id="calendar-intro" class="canva-text" style="color: rgb(87, 94, 147); font-weight: 400; font-style: normal; font-size: 17px;">A month of little wins, mapped among the stars.</p>
+        </div><span data-template-id="calendar-tip" class="status-pill canva-tag" style="background: rgb(255, 240, 168); color: rgb(102, 82, 112); font-weight: 700; font-style: normal; font-size: 10px;">TODAY HAS A PINK RING</span>
+       </div>
+       <section data-template-id="calendar-panel" class="panel canva-panel" style="background: rgb(251, 250, 255);">
+        <div class="calendar-tools"><button id="previous-month" type="button" data-template-id="previous-month-button" class="mini-btn canva-button" style="background: linear-gradient(rgb(255, 255, 255), rgb(215, 215, 237)); color: rgb(49, 56, 109); font-weight: 700; font-style: normal; font-size: 10px;">← Previous</button>
+         <div class="calendar-selectors" aria-label="Choose calendar month and year"><select id="calendar-month-select" aria-label="Calendar month"></select><select id="calendar-year-select" aria-label="Calendar year"></select></div>
+         <div style="display:flex;gap:7px"><button id="today-month" type="button" data-template-id="today-month-button" class="mini-btn canva-button" style="background: linear-gradient(rgb(255, 255, 255), rgb(215, 215, 237)); color: rgb(49, 56, 109); font-weight: 700; font-style: normal; font-size: 10px;">Today</button> <button id="next-month" type="button" data-template-id="next-month-button" class="mini-btn canva-button" style="background: linear-gradient(rgb(255, 255, 255), rgb(215, 215, 237)); color: rgb(49, 56, 109); font-weight: 700; font-style: normal; font-size: 10px;">Next →</button>
+         </div>
+        </div>
+        <div class="calendar" id="calendar-grid" aria-label="Monthly task calendar"></div>
+       </section>
+      </section>
+     </main>
+    </div>
+   </div>
+  </div>
+  <div id="celebration" class="celebrate" role="status" aria-live="polite">
+   <span class="spark">✦</span><span id="celebration-text"></span>
+  </div>
+  <dialog id="task-dialog" class="task-dialog" aria-labelledby="task-dialog-title">
+   <div class="task-dialog-head"><h2>MISSION DETAILS</h2><button id="task-dialog-close" class="task-dialog-close" type="button" aria-label="Close mission details">×</button></div>
+   <div class="task-dialog-body">
+    <h3 id="task-dialog-title" class="task-dialog-title"></h3>
+    <p id="task-dialog-notes" class="task-dialog-notes"></p>
+    <div class="task-dialog-grid">
+     <div class="task-dialog-detail"><b>Due date</b><span id="task-dialog-date"></span></div>
+     <div class="task-dialog-detail"><b>Category</b><span id="task-dialog-category"></span></div>
+     <div class="task-dialog-detail"><b>Priority</b><span id="task-dialog-priority"></span></div>
+     <div class="task-dialog-detail"><b>Status</b><span id="task-dialog-status"></span></div>
+    </div>
+    <div class="task-dialog-actions"><button id="task-dialog-edit" class="mini-btn" type="button">Edit</button><button id="task-dialog-delete" class="mini-btn danger" type="button">Delete</button></div>
+   </div>
+  </dialog>
+  <template id="task-template">
+   <article class="task"><input class="toggle" type="checkbox" aria-label="Mark task complete">
+    <div>
+     <div class="task-name"></div>
+     <div class="task-note"></div>
+     <div class="meta">
+      <span class="tag task-date"></span><span class="tag task-category"></span><span class="tag task-priority"></span>
+     </div>
+    </div>
+    <div class="task-actions">
+     <button type="button" class="mini-btn edit-task">Edit</button><button type="button" class="mini-btn danger delete-task">Delete</button>
+    </div>
+   </article>
+  </template>
+  <script>
+    const TODAY="2026-09-07";
+    let records=[],selectedMonth="2026-09",editId=null,deletingId=null,deletingCategoryId=null;
+    const calendarMonths=["January","February","March","April","May","June","July","August","September","October","November","December"],calendarYears=Array.from({length:21},(_,i)=>Number(TODAY.slice(0,4))-10+i);
+    if(!window.dataSdk){
+      let localHandler=null;
+      const localKey="y2k-task-galaxy-records";
+      const localRecords=()=>{try{return JSON.parse(localStorage.getItem(localKey)||"[]");}catch{return[];}};
+      const notify=()=>localHandler&&localHandler.onDataChanged(localRecords());
+      window.dataSdk={
+        async init(handler){localHandler=handler;notify();return{isOk:true};},
+        async create(data){const next={...data,__backendId:Date.now().toString(36)+Math.random().toString(36).slice(2)};const all=localRecords();all.push(next);localStorage.setItem(localKey,JSON.stringify(all));notify();return{isOk:true,record:next};},
+        async update(data){const all=localRecords(),index=all.findIndex(item=>item.__backendId===data.__backendId);if(index<0)return{isOk:false};all[index]=data;localStorage.setItem(localKey,JSON.stringify(all));notify();return{isOk:true,record:data};},
+        async delete(data){const all=localRecords().filter(item=>item.__backendId!==data.__backendId);localStorage.setItem(localKey,JSON.stringify(all));notify();return{isOk:true};}
+      };
+    }
+    const $=id=>document.getElementById(id);
+    const taskRecords=()=>records.filter(r=>r.record_type==="task");
+    const categories=()=>records.filter(r=>r.record_type==="category").sort((a,b)=>a.title.localeCompare(b.title));
+    const badges=()=>records.filter(r=>r.record_type==="badge");
+    const esc=value=>String(value||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+    const dateLabel=d=>new Date(d+"T12:00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short"});
+    const monthLabel=m=>new Date(m+"-01T12:00:00").toLocaleDateString("en-GB",{month:"long",year:"numeric"});
+    const themePalettes={ocean:{label:"Ocean Pop",colors:["#536ee8","#ef8fbd"],blue:"#536ee8",violet:"#8274dc",pink:"#ef8fbd",hot:"#d94e97",sky:"#d4b6d6",grid:"#b28ab84d",spark:"#fff",desktop:"#d8d5f1",sidebarA:"#ece9fb",sidebarB:"#d4d0ef",contentA:"#f6effb",contentB:"#e2e9fd",contentC:"#f7cce1",panel:"#fbfaff",task:"#fff",soft:"#f5f1ff",field:"#fff",fieldShadow:"#cbc9df",line:"#65659d",shadow:"#aaa3c5",shadowSoft:"#65507c80",highlight:"#fff",highlightSoft:"#fff0a8",text:"#27346e",muted:"#eeecf6",mutedText:"#9995b3",buttonA:"#fff",buttonB:"#d7d7ed",buttonBorder:"#65669d",barBg:"#bbb8d6",barFill:"#6e7ce0"},mint:{label:"Mint Soda",colors:["#38a89d","#f4b942"],blue:"#319c9a",violet:"#5b8f9b",pink:"#f4b942",hot:"#d88920",sky:"#c7e4df",grid:"#79b5aa66",spark:"#fff",desktop:"#d9eee8",sidebarA:"#e4f6ef",sidebarB:"#c8e4dc",contentA:"#effbf5",contentB:"#d8eff0",contentC:"#f6e6c5",panel:"#fbfffc",task:"#fff",soft:"#effaf5",field:"#fff",fieldShadow:"#bddbd2",line:"#438d87",shadow:"#91bdb4",shadowSoft:"#5e938880",highlight:"#fff",highlightSoft:"#fff0b8",text:"#164e63",muted:"#e5f0ee",mutedText:"#668b89",buttonA:"#fff",buttonB:"#d4eeea",buttonBorder:"#438d87",barBg:"#b8d9d2",barFill:"#319c9a"},sunset:{label:"Sunset Glow",colors:["#e56b6f","#f5c36a"],blue:"#d85770",violet:"#a95b91",pink:"#f5c36a",hot:"#c94f5b",sky:"#f0c5b5",grid:"#c8797066",spark:"#fff",desktop:"#f6dfd2",sidebarA:"#fff0e8",sidebarB:"#f2d4cb",contentA:"#fff4ed",contentB:"#f6e0d8",contentC:"#f8dfad",panel:"#fffaf7",task:"#fff",soft:"#fff0e8",field:"#fff",fieldShadow:"#ead0c5",line:"#b86c76",shadow:"#c89a91",shadowSoft:"#a86d6d80",highlight:"#fff",highlightSoft:"#fff0b8",text:"#633b4b",muted:"#f5e8e4",mutedText:"#9c6c75",buttonA:"#fff",buttonB:"#f8d8d2",buttonBorder:"#b86c76",barBg:"#ead0c5",barFill:"#d85770"},midnight:{label:"Midnight Blue",colors:["#234e70","#8fc4c8"],blue:"#234e70",violet:"#326b86",pink:"#8fc4c8",hot:"#176b87",sky:"#c5d7e2",grid:"#668da766",spark:"#fff",desktop:"#d8e5ec",sidebarA:"#e9f2f5",sidebarB:"#cbdde6",contentA:"#f1f7fa",contentB:"#dcebf0",contentC:"#d7e8e1",panel:"#fbfdff",task:"#fff",soft:"#edf5f7",field:"#fff",fieldShadow:"#c5d8e2",line:"#3e6d86",shadow:"#88aab8",shadowSoft:"#53788a80",highlight:"#fff",highlightSoft:"#d9f0e8",text:"#183b56",muted:"#e6eef2",mutedText:"#668394",buttonA:"#fff",buttonB:"#d7e8ee",buttonBorder:"#3e6d86",barBg:"#c5d8e2",barFill:"#326b86"}};
+    let themeSettings={mode:"light",palette:"ocean",choice:"light"};
+    function saveThemeSettings(){try{localStorage.setItem("y2k-task-galaxy-theme",JSON.stringify(themeSettings));}catch{}}
+    function applyTheme(){
+      const palette=themePalettes[themeSettings.palette]||themePalettes.ocean;document.body.dataset.theme=themeSettings.mode;document.body.dataset.palette=themeSettings.palette;Object.entries(palette).forEach(([key,value])=>{if(key!=="label"&&key!=="colors")document.documentElement.style.setProperty("--palette-"+key.replace(/[A-Z]/g,letter=>"-"+letter.toLowerCase()),value);});document.documentElement.style.setProperty("--blue",palette.blue);document.documentElement.style.setProperty("--violet",palette.violet);document.documentElement.style.setProperty("--pink",palette.pink);document.documentElement.style.setProperty("--hot-pink",palette.hot);$("theme-mode").value=themeSettings.choice;saveThemeSettings();
+    }
+    function loadThemeSettings(){try{const saved=JSON.parse(localStorage.getItem("y2k-task-galaxy-theme")||"{}");if(saved.mode==="dark"||saved.mode==="light")themeSettings.mode=saved.mode;if(themePalettes[saved.palette])themeSettings.palette=saved.palette;if(["light","dark",...Object.keys(themePalettes)].includes(saved.choice))themeSettings.choice=saved.choice;else if(themeSettings.mode==="dark")themeSettings.choice="dark";else if(themeSettings.palette!=="ocean")themeSettings.choice=themeSettings.palette;}catch{}applyTheme();}
+
+    function updateCategoryOptions(){
+      const options=categories().map(c=>`<option value="${esc(c.title)}">${esc(c.title)}</option>`).join(""),saved=$("task-category").value;
+      $("task-category").innerHTML=options;$("filter-category").innerHTML=`<option value="all">All categories</option>${options}`;
+      if([...$("task-category").options].some(o=>o.value===saved))$("task-category").value=saved;
+    }
+    function renderCategories(){
+      updateCategoryOptions();
+      $("sidebar-categories").innerHTML=categories().map(c=>`<div class="category-row"><i class="dot" style="background:${esc(c.category_color)}"></i>${esc(c.title)}</div>`).join("");
+      $("category-edit-list").innerHTML="";
+      categories().forEach(c=>{
+        const row=document.createElement("div");row.className="category-edit";
+        row.innerHTML=`<i class="dot" style="background:${esc(c.category_color)}"></i><label class="sr-only">Category name</label><input type="text" value="${esc(c.title)}" maxlength="30"><input type="color" value="${esc(c.category_color)}" aria-label="Category colour"><button class="mini-btn">Save</button><button class="mini-btn danger">Delete</button>`;
+        const [name,color,save,remove]=row.querySelectorAll("input,button");save.onclick=()=>saveCategory(c,name.value.trim(),color.value,save);remove.onclick=()=>deleteCategory(c,remove);$("category-edit-list").appendChild(row);
+      });
+    }
+    function filteredTasks(){
+      const q=$("search").value.toLowerCase().trim(),cat=$("filter-category").value,status=$("filter-status").value,priority=$("filter-priority").value;
+      return taskRecords().filter(t=>(!q||(t.title+" "+t.notes).toLowerCase().includes(q))&&(cat==="all"||t.category===cat)&&(status==="all"||(status==="done"?t.completed:!t.completed))&&(priority==="all"||t.priority===priority)).sort((a,b)=>a.due_date.localeCompare(b.due_date));
+    }
+    function renderTasks(){
+      const list=$("task-list"),tasks=filteredTasks();list.innerHTML="";
+      if(!tasks.length){list.innerHTML='<div class="empty">No matching tasks in this orbit. Try another filter or add a fresh mission.</div>';return;}
+      tasks.forEach(t=>{
+        const node=$("task-template").content.firstElementChild.cloneNode(true);node.dataset.id=t.__backendId;if(t.completed)node.classList.add("completed");
+        const toggle=node.querySelector(".toggle");toggle.checked=t.completed;toggle.onchange=()=>setComplete(t,toggle.checked,toggle);
+        node.querySelector(".task-name").textContent=t.title;node.querySelector(".task-note").textContent=t.notes||"";
+        node.querySelector(".task-date").textContent=dateLabel(t.due_date);node.querySelector(".task-category").textContent=t.category;
+        const p=node.querySelector(".task-priority");p.textContent=t.priority;if(t.priority==="High")p.classList.add("priority-high");
+        if(!t.completed&&t.due_date<TODAY){const d=node.querySelector(".task-date");d.classList.add("overdue");d.textContent="Overdue · "+dateLabel(t.due_date);}
+        node.querySelector(".task-category").style.borderLeft="4px solid "+t.category_color;
+        node.querySelector(".edit-task").onclick=()=>startEdit(t);const del=node.querySelector(".delete-task");del.onclick=()=>deleteTask(t,del);list.appendChild(node);
+      });
+    }
+    function renderProgress(){
+      const make=(items,id,bar)=>{const done=items.filter(t=>t.completed).length,total=items.length;$(id).textContent=`${done} / ${total}`;$(bar).style.width=(total?done/total*100:0)+"%";};
+      make(taskRecords().filter(t=>t.due_date===TODAY),"today-progress","today-bar");make(taskRecords().filter(t=>t.due_date.startsWith(selectedMonth)),"month-progress","month-bar");
+    }
+    const badgeInfo={first:["🌟","First Star","Complete your first task"],five:["💿","High Five","Complete five tasks"],day:["☀️","Day Cleared","Finish every task due today"],week:["🚀","Seven Day Streak","Complete tasks on seven distinct days"]};
+    function renderBadges(){
+      $("badge-list").innerHTML="";Object.entries(badgeInfo).forEach(([id,info])=>{const r=badges().find(b=>b.badge_id===id),unlocked=r&&r.badge_unlocked,el=document.createElement("div");el.className="badge "+(unlocked?"unlocked":"");el.innerHTML=`<span class="badge-icon">${info[0]}</span><span><b>${info[1]}</b><small>${unlocked?"Unlocked! ":""}${info[2]}</small></span>`;$("badge-list").appendChild(el);});
+    }
+    let dialogTask=null;
+    function showTaskDetails(task){
+      dialogTask=task;
+      $("task-dialog-title").textContent=task.title;
+      $("task-dialog-notes").textContent=task.notes||"No notes for this mission.";
+      $("task-dialog-date").textContent=dateLabel(task.due_date);
+      $("task-dialog-category").textContent=task.category;
+      $("task-dialog-priority").textContent=task.priority;
+      $("task-dialog-status").textContent=task.completed?"Completed":"Open";
+      $("task-dialog-delete").textContent="Delete";
+      $("task-dialog").showModal();
+    }
+    function updateCalendarSelectors(){
+      const [year,month]=selectedMonth.split("-");
+      $("calendar-month-select").innerHTML=calendarMonths.map((name,index)=>`<option value="${String(index+1).padStart(2,"0")}">${name}</option>`).join("");
+      const years=calendarYears.includes(Number(year))?calendarYears:[...calendarYears,Number(year)].sort((a,b)=>a-b);
+      $("calendar-year-select").innerHTML=years.map(value=>`<option value="${value}">${value}</option>`).join("");
+      $("calendar-month-select").value=month;$("calendar-year-select").value=year;
+    }
+    function renderCalendar(){
+      updateCalendarSelectors();const grid=$("calendar-grid");grid.innerHTML=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(x=>`<div class="weekday">${x}</div>`).join("");
+      const [y,m]=selectedMonth.split("-").map(Number),first=new Date(y,m-1,1),offset=(first.getDay()+6)%7,days=new Date(y,m,0).getDate(),prevDays=new Date(y,m-1,0).getDate();
+      for(let i=0;i<42;i++){
+        let num=i-offset+1,key,muted=false;
+        if(num<1){key=`${y}-${String(m-1||12).padStart(2,"0")}-${String(prevDays+num).padStart(2,"0")}`;muted=true;}
+        else if(num>days){key=`${y}-${String(m===12?1:m+1).padStart(2,"0")}-${String(num-days).padStart(2,"0")}`;muted=true;}
+        else key=`${selectedMonth}-${String(num).padStart(2,"0")}`;
+        const day=document.createElement("div");day.className="day"+(muted?" muted":"")+(key===TODAY?" today":"");day.innerHTML=`<span class="date-num">${new Date(key+"T12:00:00").getDate()}</span>`;
+        taskRecords().filter(t=>t.due_date===key).forEach(t=>{const b=document.createElement("button");b.className="cal-task"+(t.completed?" done":"");b.style.borderColor=t.category_color;b.textContent=t.title;b.title=t.title;b.onclick=()=>showTaskDetails(t);day.appendChild(b);});grid.appendChild(day);
+      }
+    }
+    function render(){renderCategories();renderTasks();renderProgress();renderBadges();renderCalendar();}
+    function switchView(view){document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===view+"-view"));document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.view===view));}
+    async function setComplete(task,completed,control){control.disabled=true;const result=await window.dataSdk.update({...task,completed,updated_at:new Date().toISOString()});control.disabled=false;if(result.isOk)await checkBadges();else $("task-message").textContent="Could not save that change. Please try again.";}
+    function startEdit(t){editId=t.__backendId;$("task-title").value=t.title;$("task-notes").value=t.notes;$("task-date").value=t.due_date;$("task-category").value=t.category;$("task-priority").value=t.priority;$("task-completed").checked=t.completed;$("task-submit").textContent="Save changes";$("task-title").focus();}
+    async function deleteTask(t,button){
+      if(deletingId!==t.__backendId){deletingId=t.__backendId;button.textContent="Confirm?";setTimeout(()=>{if(deletingId===t.__backendId){deletingId=null;button.textContent="Delete";}},3500);return;}
+      button.disabled=true;const result=await window.dataSdk.delete(t);if(!result.isOk){button.disabled=false;button.textContent="Delete";$("task-message").textContent="Could not delete task.";}else if($("task-dialog").open)$("task-dialog").close();deletingId=null;
+    }
+    async function saveCategory(old,name,color,button){
+      if(!name)return;button.disabled=true;const changed=old.title!==name;let result=await window.dataSdk.update({...old,title:name,category_color:color,updated_at:new Date().toISOString()});
+      if(result.isOk&&changed){for(const t of taskRecords().filter(t=>t.category===old.title))await window.dataSdk.update({...t,category:name,category_color:color,updated_at:new Date().toISOString()});}
+      button.disabled=false;if(!result.isOk)$("category-message").textContent="Could not save category.";
+    }
+    async function deleteCategory(category,button){
+      if(deletingCategoryId!==category.__backendId){deletingCategoryId=category.__backendId;button.textContent="Confirm?";setTimeout(()=>{if(deletingCategoryId===category.__backendId){deletingCategoryId=null;button.textContent="Delete";}},3500);return;}
+      button.disabled=true;const remaining=categories().filter(c=>c.__backendId!==category.__backendId),replacement=remaining[0]||{title:"Personal",category_color:"#536ee8"};
+      for(const task of taskRecords().filter(t=>t.category===category.title))await window.dataSdk.update({...task,category:replacement.title,category_color:replacement.category_color,updated_at:new Date().toISOString()});
+      const result=await window.dataSdk.delete(category);button.disabled=false;deletingCategoryId=null;if(!result.isOk){button.textContent="Delete";$("category-message").textContent="Could not delete category.";}
+    }
+    async function checkBadges(){
+      const tasks=taskRecords(),completed=tasks.filter(t=>t.completed),dueToday=tasks.filter(t=>t.due_date===TODAY),dates=new Set(completed.map(t=>t.due_date)),earned={first:completed.length>=1,five:completed.length>=5,day:dueToday.length>0&&dueToday.every(t=>t.completed),week:dates.size>=7};
+      for(const [id,yes] of Object.entries(earned)){const b=badges().find(x=>x.badge_id===id);if(yes&&b&&!b.badge_unlocked){const result=await window.dataSdk.update({...b,badge_unlocked:true,updated_at:new Date().toISOString()});if(result.isOk){$("celebration-text").textContent=`Achievement unlocked: ${badgeInfo[id][1]}!`;const c=$("celebration");c.classList.add("show");setTimeout(()=>c.classList.remove("show"),4200);}}}
+    }
+    async function saveMonth(month){selectedMonth=month;renderProgress();renderCalendar();const setting=records.find(r=>r.record_type==="setting");if(setting)await window.dataSdk.update({...setting,selected_month:month,updated_at:new Date().toISOString()});}
+    $("task-form").addEventListener("submit",async e=>{
+      e.preventDefault();const btn=$("task-submit"),title=$("task-title").value.trim();if(!title)return;btn.disabled=true;$("task-message").textContent="";
+      const cat=categories().find(c=>c.title===$("task-category").value),data={record_type:"task",title,notes:$("task-notes").value.trim(),due_date:$("task-date").value,category:cat?.title||"Personal",category_color:cat?.category_color||"#536ee8",priority:$("task-priority").value,completed:$("task-completed").checked,created_at:new Date().toISOString(),updated_at:new Date().toISOString(),selected_month:"",badge_id:"",badge_unlocked:false};
+      const result=editId?await window.dataSdk.update({...records.find(r=>r.__backendId===editId),...data}):await window.dataSdk.create(data);btn.disabled=false;
+      if(result.isOk){e.target.reset();$("task-date").value=TODAY;editId=null;btn.textContent="Add to galaxy";await checkBadges();}else $("task-message").textContent="Could not save task. Please try again.";
+    });
+    $("category-form").addEventListener("submit",async e=>{
+      e.preventDefault();const name=$("new-category-name").value.trim(),btn=$("new-category-button");if(!name)return;if(categories().some(c=>c.title.toLowerCase()===name.toLowerCase())){$("category-message").textContent="That category already exists.";return;}
+      btn.disabled=true;const res=await window.dataSdk.create({record_type:"category",title:name,notes:"",due_date:"",category:"",category_color:$("new-category-color").value,priority:"",completed:false,created_at:new Date().toISOString(),updated_at:new Date().toISOString(),selected_month:"",badge_id:"",badge_unlocked:false});btn.disabled=false;
+      if(res.isOk){e.target.reset();$("new-category-color").value="#536ee8";}else $("category-message").textContent="Could not add category.";
+    });
+    ["search","filter-category","filter-status","filter-priority"].forEach(id=>$(id).addEventListener(id==="search"?"input":"change",renderTasks));
+    document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>switchView(b.dataset.view));
+    $("previous-month").onclick=()=>{const d=new Date(selectedMonth+"-01T12:00:00");d.setMonth(d.getMonth()-1);saveMonth(d.toISOString().slice(0,7));};
+    $("next-month").onclick=()=>{const d=new Date(selectedMonth+"-01T12:00:00");d.setMonth(d.getMonth()+1);saveMonth(d.toISOString().slice(0,7));};
+    $("today-month").onclick=()=>saveMonth(TODAY.slice(0,7));
+    $("calendar-month-select").onchange=()=>saveMonth(`${$("calendar-year-select").value}-${$("calendar-month-select").value}`);
+    $("calendar-year-select").onchange=()=>saveMonth(`${$("calendar-year-select").value}-${$("calendar-month-select").value}`);
+    $("task-dialog-close").onclick=()=>$("task-dialog").close();
+    $("task-dialog-edit").onclick=()=>{if(dialogTask){$("task-dialog").close();switchView("list");startEdit(dialogTask);}};
+    $("task-dialog-delete").onclick=()=>{if(dialogTask)deleteTask(dialogTask,$("task-dialog-delete"));};
+    $("theme-mode").onchange=()=>{const choice=$("theme-mode").value;themeSettings.choice=choice;if(choice==="light"||choice==="dark")themeSettings.mode=choice;else{themeSettings.mode="light";themeSettings.palette=choice;}applyTheme();};
+    loadThemeSettings();
+    const handler={onDataChanged(data){records=data;const setting=records.find(r=>r.record_type==="setting");if(setting&&setting.selected_month)selectedMonth=setting.selected_month;render();}};
+    (async()=>{const res=await window.dataSdk.init(handler);if(!res.isOk)$("task-message").textContent="Your planner could not connect right now.";})();
+    $("task-date").value=TODAY;
+    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
+  </script>
+ 
+</body></html>
