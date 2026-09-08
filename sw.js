@@ -1,4 +1,4 @@
-const CACHE_NAME = "task-galaxy-v2";
+const CACHE_NAME = "task-galaxy-v3";
 const APP_SHELL = ["./", "./index.html", "./manifest.json", "./icon.svg"];
 
 self.addEventListener("install", event => {
