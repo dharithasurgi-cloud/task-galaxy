@@ -389,7 +389,7 @@
     const handler={onDataChanged(data){records=data;const setting=records.find(r=>r.record_type==="setting");if(setting&&setting.selected_month)selectedMonth=setting.selected_month;render();}};
     (async()=>{const res=await window.dataSdk.init(handler);if(!res.isOk)$("task-message").textContent="Your planner could not connect right now.";})();
     $("task-date").value=TODAY;
-    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
+    if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw-v3.js").catch(()=>{});
   </script>
  
 </body></html>
